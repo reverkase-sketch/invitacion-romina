@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fiesta de la granja de Romina - Invitación</title>
+<style>
+  :root{
+    --bg-top: rgb(255,249,240);
+    --bg-mid: rgb(255,252,245);
+    --bg-bottom: rgb(247,255,239);
+    --grass: rgb(214,241,204);
+    --text-1: #ef476f; /* rose */
+    --text-2: #0e9f6e; /* emerald-ish */
+    --text-3: #5a524a; /* stone */
+    --btn-1: #ef476f;
+    --btn-2: #fbbf24;
+  }
+  *{ box-sizing: border-box; }
+  html, body{
+    height: 100%;
+    margin: 0;
+    background: var(--bg-top);
+    color: #333;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol';
+  }
+  .frame{
+    position: relative;
+    width: min(420px, 90vw);
+    height: min(800px, 90vh);
+    aspect-ratio: 9/16;
+    margin: auto;
+    margin-top: clamp(8px, 3vh, 24px);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,.12);
+    border: 1px solid rgba(253, 230, 138, .9);
+  }
+  /* Background */
+  .sky{
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, var(--bg-top), var(--bg-mid), var(--bg-bottom));
+  }
+  .grass{
+    position:absolute; left:0; right:0; bottom:0; height:33%;
+    background: linear-gradient(to top, var(--grass), transparent);
+  }
+
+  /* Sun */
+  .sun{ position:absolute; top:16px; left:16px; width:64px; height:64px; }
+  .sun-core{ width:100%; height:100%; border-radius:999px; background:#fde047; box-shadow: 0 4px 10px rgba(0,0,0,.12) inset; }
+  .sun-rays{ position:absolute; inset:-10px; animation: spin 12s linear infinite; }
+  .ray{ position:absolute; left:50%; top:50%; width:2px; height:24px; background:#fde047; transform-origin: bottom; }
+  @keyframes spin { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+
+  /* Clouds */
+  .cloud{ position:absolute; opacity:.8; }
+  .cloud svg{ display:block; }
+  .cloud.left{ right:-30%; top:70px; animation: cloud-left 22s linear infinite; }
+  .cloud.right{ left:-30%; top:110px; animation: cloud-right 24s linear infinite; }
+  @keyframes cloud-left { 0%{ transform: translateX(20%);} 100%{ transform: translateX(-120%);} }
+  @keyframes cloud-right { 0%{ transform: translateX(-120%);} 100%{ transform: translateX(20%);} }
+
+  /* Text */
+  .title{ position:absolute; top:120px; left:0; right:0; padding:0 24px; text-align:center;
+          color: var(--text-1); font-weight: 900; font-size: clamp(22px, 4.5vw, 30px);
+          text-shadow: 0 1px 0 #fff; opacity:0; transform: translateY(8px); animation: fadeUp .9s ease-out forwards; }
+  .subtitle{ position:absolute; top:170px; left:0; right:0; padding:0 24px; text-align:center;
+             color: var(--text-2); font-weight: 700; font-size: clamp(16px, 3.5vw, 20px);
+             opacity:0; transform: translateY(8px); animation: fadeUp .9s ease-out .15s forwards; }
+  .place{ position:absolute; top:198px; left:0; right:0; padding:0 24px; text-align:center;
+          color: var(--text-3); font-weight: 600; font-size: clamp(14px, 3.2vw, 18px);
+          opacity:0; transform: translateY(8px); animation: fadeUp .9s ease-out .3s forwards; }
+  @keyframes fadeUp { to { opacity:1; transform: translateY(0); } }
+
+  /* Animals area */
+  .animals{ position:absolute; left:0; right:0; bottom:110px; display:flex; align-items:flex-end; justify-content:space-around; padding: 0 18px; }
+
+  /* Pig (emoji) */
+  .pig{ width:96px; height:96px; display:grid; place-items:center; font-size:56px; }
+  .pig{ animation: hop 1.6s ease-in-out infinite; }
+  @keyframes hop { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-12px);} }
+
+  /* Chick (emoji) */
+  .chick{ width:80px; height:80px; display:grid; place-items:center; font-size:48px; }
+  .chick{ animation: walk 2.8s ease-in-out infinite; }
+  @keyframes walk { 0%{ transform: translateX(-16px);} 50%{ transform: translateX(16px);} 100%{ transform: translateX(-16px);} }
+
+  /* Cow (SVG) */
+  .cow{ width:112px; height:112px; position:relative; }
+  .blinkL, .blinkR{
+    transform-origin: center;
+    animation: blink 3.2s ease-in-out infinite;
+  }
+  .blinkR{ animation-duration: 3.6s; animation-delay:.1s; }
+  @keyframes blink { 0%, 8%, 100% { transform: scaleY(1);} 4% { transform: scaleY(0.05);} }
+
+  /* Footer buttons */
+  .footer{ position:absolute; left:0; right:0; bottom:12px; display:flex; gap:10px; justify-content:center; padding: 0 16px; }
+  .btn{ border:0; border-radius:14px; padding:10px 14px; font-weight:700; font-size:14px; cursor:pointer; box-shadow: 0 8px 18px rgba(0,0,0,.08); }
+  .btn-full{ background: var(--btn-1); color:white; }
+  .btn-ics{ background: var(--btn-2); color:#2b2b2b; text-decoration:none; display:inline-block; }
+  .btn:active{ transform: scale(.98); }
+</style>
+</head>
+<body>
+  <div class="frame" id="frame">
+    <!-- Background -->
+    <div class="sky"></div>
+    <div class="grass"></div>
+
+    <!-- Sun -->
+    <div class="sun" aria-hidden="true">
+      <div class="sun-core"></div>
+      <div class="sun-rays">
+        <!-- 12 rays -->
+        <div class="ray" style="transform: rotate(0deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(30deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(60deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(90deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(120deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(150deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(180deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(210deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(240deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(270deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(300deg) translate(-50%, -160%);"></div>
+        <div class="ray" style="transform: rotate(330deg) translate(-50%, -160%);"></div>
+      </div>
+    </div>
+
+    <!-- Clouds -->
+    <div class="cloud left">
+      <svg width="200" height="90" viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="55" rx="35" ry="22" fill="#fff"/>
+        <ellipse cx="85" cy="45" rx="40" ry="28" fill="#fff"/>
+        <ellipse cx="125" cy="60" rx="45" ry="25" fill="#fff"/>
+        <ellipse cx="160" cy="50" rx="30" ry="20" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="cloud right">
+      <svg width="200" height="90" viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="50" cy="55" rx="35" ry="22" fill="#fff"/>
+        <ellipse cx="85" cy="45" rx="40" ry="28" fill="#fff"/>
+        <ellipse cx="125" cy="60" rx="45" ry="25" fill="#fff"/>
+        <ellipse cx="160" cy="50" rx="30" ry="20" fill="#fff"/>
+      </svg>
+    </div>
+
+    <!-- Text -->
+    <h1 class="title">¡Fiesta de la granja de Romina!</h1>
+    <p class="subtitle">23 de agosto • 14 hrs</p>
+    <p class="place">Parque Recreativo Aculco</p>
+
+    <!-- Animals -->
+    <div class="animals">
+      <div class="pig" title="Cerdito" aria-label="Cerdito">🐷</div>
+
+      <div class="cow" title="Vaca" aria-label="Vaca">
+        <svg viewBox="0 0 120 120" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <!-- cara -->
+          <circle cx="60" cy="60" r="42" fill="#fff" stroke="#333" stroke-width="2" />
+          <!-- manchas -->
+          <ellipse cx="45" cy="58" rx="12" ry="16" fill="#333" opacity="0.15" />
+          <ellipse cx="80" cy="50" rx="10" ry="14" fill="#333" opacity="0.15" />
+          <!-- hocico -->
+          <ellipse cx="60" cy="78" rx="22" ry="14" fill="#ffd1d1" stroke="#333" stroke-width="1.5" />
+          <circle cx="52" cy="78" r="2.2" fill="#333" />
+          <circle cx="68" cy="78" r="2.2" fill="#333" />
+          <!-- orejas -->
+          <ellipse cx="32" cy="38" rx="10" ry="14" fill="#fff" stroke="#333" stroke-width="1.5" />
+          <ellipse cx="88" cy="38" rx="10" ry="14" fill="#fff" stroke="#333" stroke-width="1.5" />
+          <!-- ojos (pupilas) -->
+          <circle cx="48" cy="58" r="4" fill="#333" />
+          <circle cx="72" cy="58" r="4" fill="#333" />
+          <!-- párpados (rectángulos que escalan en Y para parpadear) -->
+          <g class="blinkL">
+            <rect x="44" y="52" width="8" height="12" fill="#fff" />
+          </g>
+          <g class="blinkR">
+            <rect x="68" y="52" width="8" height="12" fill="#fff" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="chick" title="Pollito" aria-label="Pollito">🐥</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <button class="btn btn-full" id="btnFull">Ver en pantalla completa</button>
+      <a class="btn btn-ics" id="btnIcs" download="Fiesta_Romina.ics" href="#">Añadir al calendario</a>
+    </div>
+  </div>
+
+<script>
+  // Fullscreen
+  document.getElementById('btnFull').addEventListener('click', () => {
+    const el = document.getElementById('frame');
+    if (el.requestFullscreen) el.requestFullscreen();
+  });
+
+  // ICS generator
+  (function(){
+    const title = 'Fiesta de la granja de Romina';
+    // 23 Aug 2025 14:00 local (sin zona para simplicidad)
+    const dtStart = '20250823T140000';
+    const dtEnd   = '20250823T170000';
+    const location = 'Parque Recreativo Aculco';
+    const description = '¡Acompáñanos a celebrar en la granja!';
+    const uid = Date.now() + '@invitaromina';
+    const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+
+    const ics = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Invitacion Romina//ES',
+      'BEGIN:VEVENT',
+      'UID:' + uid,
+      'DTSTAMP:' + dtstamp,
+      'DTSTART:' + dtStart,
+      'DTEND:' + dtEnd,
+      'SUMMARY:' + title,
+      'LOCATION:' + location,
+      'DESCRIPTION:' + description,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\\n');
+
+    const href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+    document.getElementById('btnIcs').setAttribute('href', href);
+  })();
+</script>
+</body>
+</html>
