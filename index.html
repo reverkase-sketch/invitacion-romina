@@ -1,201 +1,96 @@
-import React, { useMemo } from "react";
-import { motion } from "framer-motion";
-
-// Invitación web animada (vertical) — tema granja
-// - Resolución pensada para móvil (se adapta responsive)
-// - Animaciones: sol girando, nubes desplazándose, pollito caminando, vaca parpadeando, cerdito saltando
-// - Texto con mismos datos: 23 de agosto, 14 hrs – Parque Recreativo Aculco
-// - Botones: Pantalla completa, Descargar .ics (añadir al calendario)
-
-export default function FarmInviteRomina() {
-  // Genera archivo .ics para agregar al calendario
-  const icsHref = useMemo(() => {
-    const title = "Fiesta de la granja de Romina";
-    // Ajusta fecha si quieres precisión con zona horaria; aquí se usa 2025-08-23 14:00 local
-    const dtStart = "20250823T140000"; // 23 Aug 2025 14:00
-    const dtEnd = "20250823T170000";   // 17:00 como ejemplo
-    const location = "Parque Recreativo Aculco";
-    const description = "¡Acompáñanos a celebrar en la granja!";
-    const ics = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Invitacion Romina//ES",
-      "BEGIN:VEVENT",
-      `UID:${Date.now()}@invitaromina`,
-      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z`,
-      `DTSTART:${dtStart}`,
-      `DTEND:${dtEnd}`,
-      `SUMMARY:${title}`,
-      `LOCATION:${location}`,
-      `DESCRIPTION:${description}`,
-      "END:VEVENT",
-      "END:VCALENDAR",
-    ].join("\n");
-    return `data:text/calendar;charset=utf8,${encodeURIComponent(ics)}`;
-  }, []);
-
-  const goFullscreen = () => {
-    const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
-  };
-
-  return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-[rgb(255,249,240)] text-stone-800">
-      <style>{`
-        @keyframes spin-slow { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
-        @keyframes cloud-drift-left { 0% { transform: translateX(20%);} 100% { transform: translateX(-120%);} }
-        @keyframes cloud-drift-right { 0% { transform: translateX(-120%);} 100% { transform: translateX(20%);} }
-        @keyframes walk-x { 0% { transform: translateX(-10%);} 50% { transform: translateX(10%);} 100% { transform: translateX(-10%);} }
-        @keyframes hop { 0%, 100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
-        @keyframes blink { 0%, 8%, 100% { transform: scaleY(1);} 4% { transform: scaleY(0.05);} }
-      `}</style>
-
-      <div className="aspect-[9/16] w-[min(420px,90vw)] h-[min(90vh,800px)] relative overflow-hidden rounded-3xl shadow-2xl border border-amber-200">
-        {/* Fondo ilustrado simple (cielo + pasto suave) tomando la estética original clara */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-[rgb(255,249,240)] via-[rgb(255,252,245)] to-[rgb(247,255,239)]" />
-          <div className="absolute bottom-0 h-1/3 w-full bg-gradient-to-t from-[rgb(214,241,204)] to-transparent" />
-        </div>
-
-        {/* Sol */}
-        <div className="absolute top-5 left-5">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-full bg-yellow-300 shadow"></div>
-            <div className="absolute inset-[-10px] animate-[spin-slow_12s_linear_infinite]">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <div key={i} className="absolute left-1/2 top-1/2 w-[2px] h-6 bg-yellow-300 origin-bottom" style={{
-                  transform: `rotate(${i * 30}deg) translate(-50%, -160%)`
-                }} />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Nubes */}
-        <Cloud className="absolute top-12 right-[-30%] opacity-70" dir="left" delay={0} />
-        <Cloud className="absolute top-24 left-[-30%] opacity-60" dir="right" delay={2} />
-
-        {/* Texto principal */}
-        <div className="absolute top-28 w-full px-6 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="text-2xl md:text-3xl font-extrabold text-rose-500 tracking-tight drop-shadow"
-          >
-            ¡Fiesta de la granja de Romina!
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.15 }}
-            className="mt-3 text-base md:text-lg font-semibold text-emerald-700"
-          >
-            23 de agosto • 14 hrs
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.3 }}
-            className="text-sm md:text-base text-stone-700"
-          >
-            Parque Recreativo Aculco
-          </motion.p>
-        </div>
-
-        {/* Animales */}
-        <div className="absolute bottom-24 left-0 right-0 flex items-end justify-around px-6">
-          <Pig />
-          <Cow />
-          <Chick />
-        </div>
-
-        {/* Pie con botones */}
-        <div className="absolute bottom-4 w-full px-5 flex items-center justify-center gap-3">
-          <button onClick={goFullscreen} className="px-4 py-2 rounded-xl bg-rose-500 text-white text-sm font-semibold shadow hover:brightness-110 active:scale-95">
-            Ver en pantalla completa
-          </button>
-          <a href={icsHref} download="Fiesta_Romina.ics" className="px-4 py-2 rounded-xl bg-amber-400 text-stone-900 text-sm font-semibold shadow hover:brightness-110 active:scale-95">
-            Añadir al calendario
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Cloud({ className = "", dir = "left", delay = 0 }) {
-  const anim = dir === "left" ? `cloud-drift-left 22s linear ${delay}s infinite` : `cloud-drift-right 24s linear ${delay}s infinite`;
-  return (
-    <div className={className} style={{ animation: anim }}>
-      <svg width="200" height="90" viewBox="0 0 200 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="50" cy="55" rx="35" ry="22" fill="#ffffff"/>
-        <ellipse cx="85" cy="45" rx="40" ry="28" fill="#ffffff"/>
-        <ellipse cx="125" cy="60" rx="45" ry="25" fill="#ffffff"/>
-        <ellipse cx="160" cy="50" rx="30" ry="20" fill="#ffffff"/>
-      </svg>
-    </div>
-  );
-}
-
-function Pig() {
-  return (
-    <motion.div
-      className="w-24 h-24 grid place-items-center"
-      animate={{ y: [0, -12, 0] }}
-      transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
-    >
-      <span className="text-6xl" aria-label="cerdito" title="Cerdito">🐷</span>
-    </motion.div>
-  );
-}
-
-function Chick() {
-  return (
-    <motion.div
-      className="w-20 h-20 grid place-items-center"
-      animate={{ x: [ -16, 16, -16 ] }}
-      transition={{ repeat: Infinity, duration: 2.8, ease: "easeInOut" }}
-    >
-      <span className="text-5xl" aria-label="pollito" title="Pollito">🐥</span>
-    </motion.div>
-  );
-}
-
-function Cow() {
-  // Vaca en SVG simple con ojos que parpadean
-  return (
-    <div className="w-28 h-28 relative">
-      <svg viewBox="0 0 120 120" className="w-full h-full">
-        {/* cara */}
-        <circle cx="60" cy="60" r="42" fill="#fff" stroke="#333" strokeWidth="2" />
-        {/* manchas */}
-        <ellipse cx="45" cy="58" rx="12" ry="16" fill="#333" opacity="0.15" />
-        <ellipse cx="80" cy="50" rx="10" ry="14" fill="#333" opacity="0.15" />
-        {/* hocico */}
-        <ellipse cx="60" cy="78" rx="22" ry="14" fill="#ffd1d1" stroke="#333" strokeWidth="1.5" />
-        <circle cx="52" cy="78" r="2.2" fill="#333" />
-        <circle cx="68" cy="78" r="2.2" fill="#333" />
-        {/* orejas */}
-        <ellipse cx="32" cy="38" rx="10" ry="14" fill="#fff" stroke="#333" strokeWidth="1.5" />
-        <ellipse cx="88" cy="38" rx="10" ry="14" fill="#fff" stroke="#333" strokeWidth="1.5" />
-        {/* ojos (pupilas) */}
-        <circle cx="48" cy="58" r="4" fill="#333" />
-        <circle cx="72" cy="58" r="4" fill="#333" />
-        {/* párpados (rectángulos que escalan en Y para parpadear) */}
-        <g style={{ transformOrigin: "48px 58px" }} className="origin-center"> 
-          <motion.rect x="44" y="52" width="8" height="12" fill="#fff"
-            animate={{ scaleY: [1, 0.05, 1] }}
-            transition={{ repeat: Infinity, duration: 3.2, ease: "easeInOut" }}
-          />
-        </g>
-        <g style={{ transformOrigin: "72px 58px" }} className="origin-center"> 
-          <motion.rect x="68" y="52" width="8" height="12" fill="#fff"
-            animate={{ scaleY: [1, 0.05, 1] }}
-            transition={{ repeat: Infinity, duration: 3.6, ease: "easeInOut", delay: 0.1 }}
-          />
-        </g>
-      </svg>
-    </div>
-  );
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invitación Romina</title>
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      background: linear-gradient(to top, #a8e6cf, #dcedc1);
+      overflow: hidden;
+    }
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      height: 100%;
+      max-height: 720px;
+      background: #fff8dc;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      padding: 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 2em;
+      color: #ff5722;
+      margin-bottom: 10px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 8px 0;
+      color: #333;
+      animation: fadeInUp 2s ease-in-out;
+    }
+    .sun {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-size: 50px;
+      animation: spin 20s linear infinite;
+    }
+    .cloud {
+      position: absolute;
+      top: 60px; left: -60px;
+      font-size: 40px;
+      animation: moveCloud 30s linear infinite;
+    }
+    .cow {
+      position: absolute;
+      bottom: 80px; left: 20px;
+      font-size: 40px;
+      animation: blink 4s infinite;
+    }
+    .pig {
+      position: absolute;
+      bottom: 80px; right: 20px;
+      font-size: 40px;
+      animation: jump 2s ease-in-out infinite;
+    }
+    .chick {
+      position: absolute;
+      bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 30px;
+      animation: walk 6s linear infinite;
+    }
+    @keyframes spin {from{transform: rotate(0);} to{transform: rotate(360deg);}}
+    @keyframes moveCloud {0%{left:-60px;} 100%{left:100%;}}
+    @keyframes blink {0%,90%,100%{opacity:1;}95%{opacity:0;}}
+    @keyframes jump {0%,100%{transform: translateY(0);}50%{transform: translateY(-15px);}}
+    @keyframes walk {0%{left:0;}100%{left:100%;}}
+    @keyframes fadeIn {from{opacity:0;}to{opacity:1;}}
+    @keyframes fadeInUp {from{opacity:0; transform:translateY(20px);}to{opacity:1; transform:translateY(0);}}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="sun">☀️</div>
+    <div class="cloud">☁️</div>
+    <h1>Fiesta en la Granja de Romina</h1>
+    <p>23 de Agosto - 14:00 hrs</p>
+    <p>Parque Recreativo Aculco</p>
+    <div class="cow">🐄</div>
+    <div class="pig">🐖</div>
+    <div class="chick">🐥</div>
+  </div>
+</body>
+</html>
