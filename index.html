@@ -1,69 +1,119 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Invitación Romina</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Invitación Romina – Fiesta en la Granja</title>
   <style>
-    * {margin: 0; padding: 0; box-sizing: border-box;}
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      width: 100%;
-      background: url('https://cdn.pixabay.com/photo/2017/01/31/13/14/barn-2021076_1280.png') no-repeat center center fixed;
-      background-size: cover;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: url('https://i.ibb.co/xGSgS8L/farm-background.jpg') center/cover no-repeat;
     }
     .card {
       position: relative;
-      width: 100%;
-      max-width: 480px;
-      background: rgba(255,248,220,0.9);
+      width: 90%;
+      max-width: 400px;
+      margin: auto;
+      top: 5%;
+      background: rgba(255,255,255,0.9);
       border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       padding: 20px;
       text-align: center;
-      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
-    h1 {
-      font-size: 2em;
-      color: #ff5722;
-      margin-bottom: 10px;
+    h1 { color: #e63946; }
+    .meta { color: #457b9d; font-weight: bold; }
+    .place { margin: 10px 0; }
+    #qrcode { margin: 15px auto; }
+    .animals { font-size: 3rem; }
+    .confetti-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 10;
     }
-    p {
-      font-size: 1.2em;
-      margin: 8px 0;
-      color: #333;
-    }
-    .qr {
-      margin: 20px auto;
-    }
-    .cow, .pig, .chick {
-      font-size: 40px;
-      margin: 10px;
-      display: inline-block;
-    }
-    .cow { animation: blink 4s infinite; }
-    .pig { animation: jump 2s ease-in-out infinite; }
-    .chick { animation: walk 6s linear infinite; }
-    @keyframes blink {0%,90%,100%{opacity:1;}95%{opacity:0;}}
-    @keyframes jump {0%,100%{transform: translateY(0);}50%{transform: translateY(-15px);}}
-    @keyframes walk {0%{transform: translateX(-50px);}100%{transform: translateX(50px);}}
   </style>
 </head>
 <body>
+  <canvas id="confetti" class="confetti-canvas"></canvas>
   <div class="card">
-    <h1>Fiesta en la Granja de Romina</h1>
-    <p>23 de Agosto - 14:00 hrs</p>
-    <p>Parque Recreativo Aculco</p>
-    <div class="qr">
-      <img src="https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=https%3A%2F%2Fwww.google.com%2Fmaps%2Fplace%2FParque%2BRecreativo%2BAculco%2F%4019.180343%2C-98.870446%2C17z%2Fdata%3D%213m1%214b1%214m6%213m5%211s0x85ce183a0930aa39%3A0xec1ab1736475b1b8%218m2%213d19.180343%214d-98.8678711%2116s%252Fg%252F11cltpp8h0%3Fentry%3Dttu%26g_ep%3DEgoyMDI1MDgxOS4wIKXMDSoASAFQAw%253D%253D&choe=UTF-8" alt="QR Google Maps" width="220" height="220" />
-    </div>
-    <div class="cow">🐄</div>
-    <div class="pig">🐖</div>
-    <div class="chick">🐥</div>
+    <h1>🎉 Fiesta de Romina 🎉</h1>
+    <div class="meta">23 de agosto • 14 hrs</div>
+    <div class="place">📍 Parque Recreativo Aculco</div>
+    <div id="qrcode"></div>
+    <p>Escanéame para llegar 📍</p>
+    <div class="animals">🐷 🐮 🐥</div>
   </div>
+
+  <!-- Librería QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    new QRCode(document.getElementById("qrcode"), {
+      text: "https://www.google.com/maps/place/Parque+Recreativo+Aculco/@19.180343,-98.870446,17z/data=!3m1!4b1",
+      width: 150,
+      height: 150
+    });
+  </script>
+
+  <!-- Confetti -->
+  <script>
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const confetti = [];
+
+    function randomColor() {
+      const colors = ["#e63946","#f1faee","#a8dadc","#457b9d","#ffbe0b","#fb5607","#8338ec","#3a86ff"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    function addConfettiBurst() {
+      for (let i = 0; i < 150; i++) {
+        confetti.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 40 + 10,
+          color: randomColor(),
+          tilt: Math.random() * 10 - 10
+        });
+      }
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, false);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+      });
+      updateConfetti();
+    }
+
+    function updateConfetti() {
+      confetti.forEach(p => {
+        p.y += Math.cos(p.d) + 2;
+        p.x += Math.sin(p.d);
+      });
+    }
+
+    function animate() {
+      drawConfetti();
+      requestAnimationFrame(animate);
+    }
+
+    // Primera ráfaga al cargar
+    addConfettiBurst();
+    animate();
+    // Nuevas ráfagas cada 7 segundos
+    setInterval(addConfettiBurst, 7000);
+  </script>
 </body>
 </html>
