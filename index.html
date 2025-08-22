@@ -27,7 +27,12 @@
       border-radius:22px; padding:18px 18px 26px; text-align:center;
       box-shadow:0 14px 44px rgba(0,0,0,.18);
     }
-    h1{margin:0 0 6px; color:var(--accent)}
+    h1{
+      margin:0 0 6px; 
+      color:#f4a6c1; /* Rosa pastel */
+      font-family: 'Comic Sans MS', 'Brush Script MT', cursive, sans-serif; /* Letra más bonita */
+      font-size: 1.8em;
+    }
     .meta{font-weight:800; color:#457b9d}
     .place{margin:6px 0 10px}
     #qrcode{margin:12px auto 10px; display:flex; justify-content:center}
@@ -82,10 +87,10 @@
     window.addEventListener('resize', size); size();
     const confetti=[];
     function randomColor(){const colors=['#e63946','#f1faee','#a8dadc','#457b9d','#ffbe0b','#fb5607','#8338ec','#3a86ff'];return colors[Math.floor(Math.random()*colors.length)];}
-    function burst(){const count=200;for(let i=0;i<count;i++){confetti.push({x:Math.random()*canvas.width,y:-20,r:Math.random()*5+3,c:randomColor(),vx:(Math.random()-0.5)*1.5,vy:Math.random()*2+2,t:Math.random()*Math.PI*2});}}
+    function burst(){const count=200;for(let i=0;i<count;i++){confetti.push({x:Math.random()*canvas.width,y:-20,r:Math.random()*5+3,c:randomColor(),vx:(Math.random()-0.5)*1.5,vy:Math.random()*1+1.2,t:Math.random()*Math.PI*2});}} // confeti más lento
     function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);confetti.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c;ctx.fill();});update();requestAnimationFrame(draw);}
-    function update(){confetti.forEach(p=>{p.vy+=0.012;p.t+=0.02;p.x+=p.vx+Math.sin(p.t)*0.6;p.y+=p.vy;});}
-    burst();draw();setInterval(burst,7000);
+    function update(){confetti.forEach(p=>{p.vy+=0.006;p.t+=0.01;p.x+=p.vx+Math.sin(p.t)*0.3;p.y+=p.vy;});}
+    burst();draw();setInterval(burst,9000);
   </script>
 </body>
 </html>
