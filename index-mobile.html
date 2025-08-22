@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4a6c1" />
+  <title>Invitación Romina – Móvil</title>
+  <style>
+    :root{--pink:#f4a6c1; --card:rgba(255,255,255,.92); --accent:#2a9d8f;}
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%}
+    body{
+      font-family: Arial, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: url('2150169960.jpg') no-repeat center/cover fixed;
+      display:grid; place-items:center; color:#5a3e1b;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    .phone{
+      width:min(94vw, 420px);
+      aspect-ratio: 9/16;
+      position:relative;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 18px 48px rgba(0,0,0,.22);
+      display:grid; place-items:center;
+    }
+    .card{
+      position:relative; width:90%; background:var(--card);
+      border-radius:22px; padding:18px 16px 22px; text-align:center;
+      backdrop-filter: blur(3px);
+    }
+    h1{margin:4px 0 8px; color:var(--pink); font-family:'Comic Sans MS','Brush Script MT',cursive; font-size:28px;}
+    .meta,.place{font-weight:800; color:#457b9d}
+    .place{font-weight:600}
+    #qrcode{margin:10px auto; display:flex; justify-content:center}
+    .btn{display:inline-block; background:var(--accent); color:#fff; font-weight:800; text-decoration:none; padding:10px 14px; border-radius:12px; box-shadow:0 8px 16px rgba(0,0,0,.15)}
+    .animals{margin-top:10px; display:flex; justify-content:space-around; font-size:52px;}
+    canvas.confetti{position:absolute; inset:0; pointer-events:none}
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <canvas id="confetti" class="confetti"></canvas>
+    <main class="card" role="main" aria-label="Invitación de Romina móvil">
+      <h1>🎀 Fiesta de Romina</h1>
+      <div class="meta">23 de agosto • 14 hrs</div>
+      <div class="place">📍 Parque Recreativo Aculco</div>
+      <div id="qrcode"></div>
+      <a class="btn" href="https://www.google.com/maps/place/Parque+Recreativo+Aculco/@19.180343,-98.870446,17z/" target="_blank" rel="noopener">Ver mapa</a>
+      <div class="animals"><span>🐷</span><span>🐮</span><span>🐥</span></div>
+    </main>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    new QRCode(document.getElementById('qrcode'), { text: "https://www.google.com/maps/place/Parque+Recreativo+Aculco/@19.180343,-98.870446,17z/", width: 170, height: 170 });
+  </script>
+  <script>
+    // Confeti aún más ligero para WhatsApp/móviles
+    const canvas = document.getElementById('confetti'); const ctx = canvas.getContext('2d');
+    function size(){canvas.width=canvas.parentElement.clientWidth; canvas.height=canvas.parentElement.clientHeight;}
+    addEventListener('resize', size); size();
+    const confetti=[]; function color(){const c=['#f4a6c1','#f1faee','#a8dadc','#ffbe0b','#3a86ff'];return c[Math.floor(Math.random()*c.length)];}
+    function burst(){const n=80; for(let i=0;i<n;i++){confetti.push({x:Math.random()*canvas.width,y:-10,r:Math.random()*4+2,c:color(),vx:(Math.random()-0.5)*1,vy:Math.random()*0.7+0.6,t:Math.random()*6.28});}}
+    function draw(){ctx.clearRect(0,0,canvas.width,canvas.height); for(const p of confetti){ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283); ctx.fillStyle=p.c; ctx.fill(); p.vy+=0.003; p.t+=0.006; p.x+=p.vx+Math.sin(p.t)*0.22; p.y+=p.vy;} requestAnimationFrame(draw);}
+    burst(); draw(); setInterval(burst, 11000);
+  </script>
+</body>
+</html>
